@@ -12,11 +12,12 @@ interface Props {
 
 export default function ChoreChip({ instance, onToggle }: Props) {
   const color = instance.memberColor ?? PALETTE[instance.choreId % PALETTE.length];
+  const bgColor = `${color}28`; // ~16% opacity tint
 
   return (
     <div
       className={`chore-chip ${instance.isComplete ? 'complete' : ''}`}
-      style={{ borderLeftColor: color }}
+      style={{ borderLeftColor: color, backgroundColor: bgColor }}
       title={`${instance.title}${instance.memberName ? ` — ${instance.memberName}` : ''}`}
     >
       <input

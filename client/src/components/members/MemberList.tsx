@@ -1,7 +1,11 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Member } from '../../types';
 import { getMembers, createMember, updateMember, deleteMember } from '../../api';
 import MemberForm from './MemberForm';
+
+function rowStyle(color: string | null): React.CSSProperties {
+  return color ? { backgroundColor: `${color}18` } : {};
+}
 
 export default function MemberList() {
   const [members, setMembers] = useState<Member[]>([]);
@@ -75,7 +79,7 @@ export default function MemberList() {
           </thead>
           <tbody>
             {members.map((m) => (
-              <tr key={m.id}>
+              <tr key={m.id} style={rowStyle(m.color)}>
                 <td>
                   {m.color ? (
                     <span

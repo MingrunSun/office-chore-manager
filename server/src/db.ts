@@ -19,10 +19,9 @@ db.exec(`
 `);
 
 // Migrate existing databases that don't have the color column yet
-try {
+const memberColumns = db.prepare('PRAGMA table_info(members)').all() as unknown as Array<{ name: string }>;
+if (!memberColumns.some((col) => col.name === 'color')) {
   db.exec('ALTER TABLE members ADD COLUMN color TEXT');
-} catch {
-  // Column already exists — no-op
 }
 
 db.exec(`
