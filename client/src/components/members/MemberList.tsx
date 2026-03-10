@@ -108,6 +108,7 @@ export default function MemberList() {
           initial={editing}
           onSave={handleSave}
           onCancel={closeForm}
+          saveError={error}
         />
       )}
     </div>

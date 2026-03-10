@@ -5,6 +5,7 @@ interface Props {
   initial?: Member | null;
   onSave: (data: { name: string; email: string; color: string | null }) => void;
   onCancel: () => void;
+  saveError?: string;
 }
 
 const COLOR_OPTIONS = [
@@ -13,7 +14,7 @@ const COLOR_OPTIONS = [
   '#e05c5c', '#7b8fa1', '#c47b2b', '#6b5ea8',
 ];
 
-export default function MemberForm({ initial, onSave, onCancel }: Props) {
+export default function MemberForm({ initial, onSave, onCancel, saveError }: Props) {
   const [name, setName] = useState(initial?.name ?? '');
   const [email, setEmail] = useState(initial?.email ?? '');
   const [color, setColor] = useState<string | null>(initial?.color ?? null);
@@ -73,6 +74,7 @@ export default function MemberForm({ initial, onSave, onCancel }: Props) {
               ))}
             </div>
           </div>
+          {saveError && <div className="error-banner">{saveError}</div>}
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
             <button type="submit" className="btn btn-primary">Save</button>
