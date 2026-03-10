@@ -10,15 +10,15 @@ router.get('/', (_req: Request, res: Response) => {
 });
 
 router.post('/', (req: Request, res: Response) => {
-  const { name, email } = req.body;
+  const { name, email, color } = req.body;
   if (!name || !email) {
     res.status(400).json({ error: 'name and email are required' });
     return;
   }
   try {
     const result = db
-      .prepare('INSERT INTO members (name, email) VALUES (?, ?)')
-      .run([name.trim(), email.trim().toLowerCase()]);
+      .prepare('INSERT INTO members (name, email, color) VALUES (?, ?, ?)')
+      .run([name.trim(), email.trim().toLowerCase(), color ?? null]);
     const member = db
       .prepare('SELECT * FROM members WHERE id = ?')
       .get([Number(result.lastInsertRowid)]) as unknown as Member;
@@ -33,7 +33,7 @@ router.post('/', (req: Request, res: Response) => {
 });
 
 router.put('/:id', (req: Request, res: Response) => {
-  const { name, email } = req.body;
+  const { name, email, color } = req.body;
   const id = parseInt(req.params.id);
   if (!name || !email) {
     res.status(400).json({ error: 'name and email are required' });
@@ -41,8 +41,8 @@ router.put('/:id', (req: Request, res: Response) => {
   }
   try {
     const result = db
-      .prepare('UPDATE members SET name = ?, email = ? WHERE id = ?')
-      .run([name.trim(), email.trim().toLowerCase(), id]);
+      .prepare('UPDATE members SET name = ?, email = ?, color = ? WHERE id = ?')
+      .run([name.trim(), email.trim().toLowerCase(), color ?? null, id]);
     if (result.changes === 0) {
       res.status(404).json({ error: 'Member not found' });
       return;

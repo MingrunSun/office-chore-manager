@@ -9,7 +9,7 @@ export async function getMembers(): Promise<Member[]> {
   return res.json();
 }
 
-export async function createMember(data: { name: string; email: string }): Promise<Member> {
+export async function createMember(data: { name: string; email: string; color?: string | null }): Promise<Member> {
   const res = await fetch(`${BASE}/members`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -22,7 +22,7 @@ export async function createMember(data: { name: string; email: string }): Promi
   return res.json();
 }
 
-export async function updateMember(id: number, data: { name: string; email: string }): Promise<Member> {
+export async function updateMember(id: number, data: { name: string; email: string; color?: string | null }): Promise<Member> {
   const res = await fetch(`${BASE}/members/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },

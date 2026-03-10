@@ -13,9 +13,17 @@ db.exec(`
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     name       TEXT NOT NULL,
     email      TEXT NOT NULL UNIQUE,
+    color      TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   )
 `);
+
+// Migrate existing databases that don't have the color column yet
+try {
+  db.exec('ALTER TABLE members ADD COLUMN color TEXT');
+} catch {
+  // Column already exists — no-op
+}
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS chores (

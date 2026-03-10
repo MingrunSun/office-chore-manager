@@ -10,6 +10,7 @@ const router = Router();
 
 interface ChoreRow extends Chore {
   member_name: string | null;
+  member_color: string | null;
 }
 
 interface CompletionRow {
@@ -81,7 +82,7 @@ router.get('/', (req: Request, res: Response) => {
 
   const chores = db
     .prepare(
-      `SELECT c.*, m.name as member_name
+      `SELECT c.*, m.name as member_name, m.color as member_color
        FROM chores c
        LEFT JOIN members m ON c.member_id = m.id`,
     )
@@ -122,6 +123,7 @@ router.get('/', (req: Request, res: Response) => {
         description: chore.description,
         memberId: chore.member_id,
         memberName: chore.member_name,
+        memberColor: chore.member_color,
         dueTime: chore.due_time,
         instanceDate: date,
         isComplete: !!comp,

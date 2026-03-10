@@ -8,11 +8,12 @@ interface Props {
   currentDate: Date;
   instances: CalendarInstance[];
   onToggle: (instance: CalendarInstance) => void;
+  onCellClick?: (date: string, time: string) => void;
 }
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
-export default function WeekView({ currentDate, instances, onToggle }: Props) {
+export default function WeekView({ currentDate, instances, onToggle, onCellClick }: Props) {
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
   const weekEnd = endOfWeek(currentDate, { weekStartsOn: 0 });
 
@@ -89,7 +90,11 @@ export default function WeekView({ currentDate, instances, onToggle }: Props) {
                 return h === hour;
               });
               return (
-                <div key={dateStr} className="week-time-cell">
+                <div
+                  key={dateStr}
+                  className="week-time-cell"
+                  onClick={() => onCellClick?.(dateStr, `${String(hour).padStart(2, '0')}:00`)}
+                >
                   {items.map((inst) => (
                     <ChoreChip
                       key={`${inst.choreId}:${inst.instanceDate}`}

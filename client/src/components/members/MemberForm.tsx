@@ -3,25 +3,33 @@ import { Member } from '../../types';
 
 interface Props {
   initial?: Member | null;
-  onSave: (data: { name: string; email: string }) => void;
+  onSave: (data: { name: string; email: string; color: string | null }) => void;
   onCancel: () => void;
 }
+
+const COLOR_OPTIONS = [
+  '#4f86c6', '#e07b54', '#5caa68', '#9b6bb5',
+  '#d4a843', '#5bb8c4', '#c45c7a', '#7a9e4f',
+  '#e05c5c', '#7b8fa1', '#c47b2b', '#6b5ea8',
+];
 
 export default function MemberForm({ initial, onSave, onCancel }: Props) {
   const [name, setName] = useState(initial?.name ?? '');
   const [email, setEmail] = useState(initial?.email ?? '');
+  const [color, setColor] = useState<string | null>(initial?.color ?? null);
 
   useEffect(() => {
     if (initial) {
       setName(initial.name);
       setEmail(initial.email);
+      setColor(initial.color ?? null);
     }
   }, [initial]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) return;
-    onSave({ name: name.trim(), email: email.trim() });
+    onSave({ name: name.trim(), email: email.trim(), color });
   };
 
   return (
@@ -49,6 +57,21 @@ export default function MemberForm({ initial, onSave, onCancel }: Props) {
               required
               placeholder="email@example.com"
             />
+          </div>
+          <div className="form-row">
+            <label>Color</label>
+            <div className="color-swatches">
+              {COLOR_OPTIONS.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className={`color-swatch ${color === c ? 'selected' : ''}`}
+                  style={{ backgroundColor: c }}
+                  onClick={() => setColor(color === c ? null : c)}
+                  aria-label={c}
+                />
+              ))}
+            </div>
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>

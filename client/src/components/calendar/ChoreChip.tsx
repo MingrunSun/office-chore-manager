@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function ChoreChip({ instance, onToggle }: Props) {
-  const color = PALETTE[instance.choreId % PALETTE.length];
+  const color = instance.memberColor ?? PALETTE[instance.choreId % PALETTE.length];
 
   return (
     <div

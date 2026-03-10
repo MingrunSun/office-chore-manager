@@ -12,7 +12,7 @@ interface RecurData {
 }
 
 interface Props {
-  initial?: Chore | null;
+  initial?: Partial<Chore> | null;
   members: Member[];
   onSave: (data: Partial<Chore>) => void;
   onCancel: () => void;
@@ -37,7 +37,7 @@ export default function ChoreForm({ initial, members, onSave, onCancel }: Props)
 
   useEffect(() => {
     if (initial) {
-      setTitle(initial.title);
+      setTitle(initial.title ?? '');
       setDescription(initial.description ?? '');
       setMemberId(initial.member_id?.toString() ?? '');
       setDueTime(initial.due_time ?? '');

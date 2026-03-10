@@ -16,7 +16,7 @@ export default function MemberList() {
 
   useEffect(() => { load(); }, []);
 
-  const handleSave = async (data: { name: string; email: string }) => {
+  const handleSave = async (data: { name: string; email: string; color: string | null }) => {
     setError('');
     try {
       if (editing) {
@@ -66,6 +66,7 @@ export default function MemberList() {
         <table className="data-table">
           <thead>
             <tr>
+              <th>Color</th>
               <th>Name</th>
               <th>Email</th>
               <th>Joined</th>
@@ -75,6 +76,16 @@ export default function MemberList() {
           <tbody>
             {members.map((m) => (
               <tr key={m.id}>
+                <td>
+                  {m.color ? (
+                    <span
+                      className="member-color-dot"
+                      style={{ backgroundColor: m.color }}
+                    />
+                  ) : (
+                    <span className="dim">—</span>
+                  )}
+                </td>
                 <td><strong>{m.name}</strong></td>
                 <td>{m.email}</td>
                 <td>{new Date(m.created_at).toLocaleDateString()}</td>

@@ -3,10 +3,11 @@ import {
   format, addMonths, subMonths, addWeeks, subWeeks,
   startOfMonth, endOfMonth, startOfWeek, endOfWeek,
 } from 'date-fns';
-import { CalendarInstance, ViewMode } from '../../types';
-import { getCalendar, markComplete, unmarkComplete } from '../../api';
+import { CalendarInstance, Chore, Member, ViewMode } from '../../types';
+import { getCalendar, getMembers, createChore, markComplete, unmarkComplete } from '../../api';
 import MonthView from './MonthView';
 import WeekView from './WeekView';
+import ChoreForm from '../chores/ChoreForm';
 
 const POLL_INTERVAL = 30_000;
 
@@ -15,6 +16,8 @@ export default function CalendarContainer() {
   const [view, setView] = useState<ViewMode>('month');
   const [instances, setInstances] = useState<CalendarInstance[]>([]);
   const [loading, setLoading] = useState(true);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [newChoreDefaults, setNewChoreDefaults] = useState<Partial<Chore> | null>(null);
 
   const getRange = useCallback(() => {
     if (view === 'month') {
@@ -51,6 +54,10 @@ export default function CalendarContainer() {
     return () => clearInterval(timer);
   }, [fetchInstances]);
 
+  useEffect(() => {
+    getMembers().then(setMembers).catch(() => {});
+  }, []);
+
   const handleToggle = async (instance: CalendarInstance) => {
     try {
       if (instance.isComplete && instance.completionId != null) {
@@ -61,6 +68,20 @@ export default function CalendarContainer() {
       await fetchInstances();
     } catch (err) {
       console.error('Toggle failed:', err);
+    }
+  };
+
+  const handleCellClick = (date: string, time: string) => {
+    setNewChoreDefaults({ due_date: date, due_time: time });
+  };
+
+  const handleNewChoreSave = async (data: Partial<Chore>) => {
+    try {
+      await createChore(data);
+      setNewChoreDefaults(null);
+      await fetchInstances();
+    } catch (err) {
+      console.error('Create chore failed:', err);
     }
   };
 
@@ -112,7 +133,15 @@ export default function CalendarContainer() {
       ) : view === 'month' ? (
         <MonthView currentDate={currentDate} instances={instances} onToggle={handleToggle} />
       ) : (
-        <WeekView currentDate={currentDate} instances={instances} onToggle={handleToggle} />
+        <WeekView currentDate={currentDate} instances={instances} onToggle={handleToggle} onCellClick={handleCellClick} />
+      )}
+      {newChoreDefaults && (
+        <ChoreForm
+          initial={newChoreDefaults}
+          members={members}
+          onSave={handleNewChoreSave}
+          onCancel={() => setNewChoreDefaults(null)}
+        />
       )}
     </div>
   );

@@ -2,6 +2,7 @@ export interface Member {
   id: number;
   name: string;
   email: string;
+  color: string | null;
   created_at: string;
 }
 
@@ -35,6 +36,7 @@ export interface CalendarInstance {
   description: string | null;
   memberId: number | null;
   memberName: string | null;
+  memberColor: string | null;
   dueTime: string | null;
   instanceDate: string;
   isComplete: boolean;
